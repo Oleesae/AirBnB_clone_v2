@@ -4,6 +4,7 @@ from datetime import datetime
 
 
 def do_pack():
+    """compresses a directory and its content using fabric"""
     local("mkdir -p versions")
     path = ("versions/web_static_{}.tgz"
             .format(datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")))
