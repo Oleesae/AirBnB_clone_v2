@@ -7,6 +7,7 @@ from datetime import datetime
 env.hosts = ['100.26.122.8', '54.209.216.103']
 env.user = 'ubuntu'
 
+
 def do_pack():
     """compresses a directory and its content using fabric"""
     local("mkdir -p versions")
@@ -18,6 +19,7 @@ def do_pack():
     if result.failed:
         return False
     return path
+
 
 def do_deploy(archive_path):
     """Deploys the static files to the host servers.
@@ -37,13 +39,14 @@ def do_deploy(archive_path):
         run("rm -rf /tmp/{}".format(file_name))
         run("sudo mv {}web_static/* {}".format(folder_path, folder_path))
         run("sudo rm -rf {}web_static".format(folder_path))
-        run("rm -rf /data/web_static/current")
+        run("sudo rm -rf /data/web_static/current")
         run("sudo ln -s {} /data/web_static/current".format(folder_path))
         print('New version deployed!')
         success = True
     except Exception:
         success = False
     return success
+
 
 def deploy():
     """Archives and deploys the web_static content to multiple
