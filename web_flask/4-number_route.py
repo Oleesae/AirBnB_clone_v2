@@ -28,10 +28,9 @@ def python(text="is cool"):
     return "Python " + text
 
 
-@app.route("/number", strict_slashes=False)
-@app.route("/number/<n>", strict_slashes=False)
+@app.route("/number/<int:n>", strict_slashes=False)
 def numberValue(n):
-    if (int(n)):
+    if isinstance(n, int):
         return n + "is a number"
 
 
