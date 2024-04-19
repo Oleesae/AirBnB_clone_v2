@@ -37,7 +37,7 @@ def numberValue(n):
 @app.route("number_template/<int:n>", strict_slashes=False)
 def html_template(n):
     if isinstance(n, int):
-        return "<h1>{}</h1>".format(n)
+        return render_template("5-number.html", n=n)
 
 
 if __name__ == "__main__":
