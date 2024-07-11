@@ -9,37 +9,8 @@ from datetime import datetime
 from fabric.api import env, local, put, run, runs_once
 
 
-env.hosts = ['100.26.122.8', '54.209.216.103']
+env.hosts = ['100.25.158.213', '100.26.11.85']
 env.user = 'ubuntu'
-
-
-def do_deploy(archive_path):
-    """Distributes an archive to a web server.
-    Args:
-        archive_path (str): The path of the archive to distribute.
-    Returns:
-        If the file doesn't exist at archive_path or an error occurs - False.
-        Otherwise - True.
-    """
-    if not os.path.isdir("versions"):
-        os.mkdir("versions")
-    cur_time = datetime.now()
-    output = "versions/web_static_{}{}{}{}{}{}.tgz".format(
-        cur_time.year,
-        cur_time.month,
-        cur_time.day,
-        cur_time.hour,
-        cur_time.minute,
-        cur_time.second
-    )
-    try:
-        print("Packing web_static to {}".format(output))
-        local("tar -cvzf {} web_static".format(output))
-        archize_size = os.stat(output).st_size
-        print("web_static packed: {} -> {} Bytes".format(output, archize_size))
-    except Exception:
-        output = None
-    return output
 
 
 def do_deploy(archive_path):
@@ -56,7 +27,7 @@ def do_deploy(archive_path):
     try:
         put(archive_path, "/tmp/{}".format(file_name))
         run("sudo mkdir -p {}".format(folder_path))
-        run("sudo tar xvzf /tmp/{0} -C {1}".format(file_name, folder_path))
+        run("sudo tar xzf /tmp/{0} -C {1}".format(file_name, folder_path))
         run("rm -rf /tmp/{}".format(file_name))
         run("sudo mv {}web_static/* {}".format(folder_path, folder_path))
         run("sudo rm -rf {}web_static".format(folder_path))
