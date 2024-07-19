@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-'''Database storage engine'''
+'''database storage engine'''
 
-from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 from models.amenity import Amenity
 from models.base_model import Base
 from models.city import City
@@ -16,7 +16,7 @@ if getenv('HBNB_TYPE_STORAGE') == 'db':
     from models.place import place_amenity
 
 classes = {"User": User, "State": State, "City": City,
-               "Amenity": Amenity, "Place": Place, "Review": Review}
+           "Amenity": Amenity, "Place": Place, "Review": Review}
 
 
 class DBStorage:
@@ -26,7 +26,6 @@ class DBStorage:
 
     def __init__(self):
         '''instantiate new dbstorage instance'''
-
         HBNB_MYSQL_USER = getenv('HBNB_MYSQL_USER')
         HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
         HBNB_MYSQL_HOST = getenv('HBNB_MYSQL_HOST')
@@ -44,19 +43,22 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        '''Queries the current database section and returns
-        a dictionary'''
+        '''query on the current db session all cls objects
+        this method must return a dictionary: (like FileStorage)
+        key = <class-name>.<object-id>
+        value = object
+        '''
         dct = {}
         if cls is None:
             for c in classes.values():
                 objs = self.__session.query(c).all()
                 for obj in objs:
-                    key = obh.__class__.__name__ + '.' + obj.id
+                    key = obj.__class__.__name__ + '.' + obj.id
                     dct[key] = obj
         else:
             objs = self.__session.query(cls).all()
             for obj in objs:
-                key = obh.__class__.__name__ + '.' + obj.id
+                key = obj.__class__.__name__ + '.' + obj.id
                 dct[key] = obj
         return dct
 
@@ -76,8 +78,9 @@ class DBStorage:
         self.__session.commit()
 
     def delete(self, obj=None):
-        '''deletes from the current database session the obj
-        if its not None'''
+        ''' deletes from the current databse session the obj
+            is it's not None
+        '''
         if obj is not None:
             self.__session.query(type(obj)).filter(
                 type(obj).id == obj.id).delete()
@@ -90,5 +93,5 @@ class DBStorage:
         self.__session = scoped_session(session_factory)()
 
     def close(self):
-        '''closes the working session'''
+        """closes the working SQLAlchemy session"""
         self.__session.close()
